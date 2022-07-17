@@ -19,10 +19,12 @@ const props=defineProps({
 <span class="column-one"><br>{{ event.firstTeam }} <br>
 {{ event.secondTeam }}</span> 
 <span class="column-two">ML
-<br>
+<!--TODO: replace with button component to display ML  -->
+><br>
 {{event.teamOneML}}
 <br>
 {{event.teamTwoML}}</span>
+<!--TODO: replace with button component to display Spread  -->
     <span class="column-three">Spread
         <br>
         {{event.teamOneSpread}}
