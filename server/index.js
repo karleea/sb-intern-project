@@ -5,6 +5,13 @@ const port = 3008
 
 const { faker } = require('@faker-js/faker')
 const bodyParser = require('body-parser')
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json())
 
