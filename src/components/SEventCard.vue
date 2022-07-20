@@ -4,46 +4,46 @@ export default {
 }
 </script>
 
-<script setup>
-const props=defineProps({
-    event: {
-        type: Object,
-        required: true
-    }
 
-})
-</script>
-
-<template><div class="card"><h3>{{ event.firstTeam }} v {{ event.secondTeam }}</h3><br>
-<div class="content">
-<span class="column-one"><br>{{ event.firstTeam }} <br>
-{{ event.secondTeam }}</span> 
-<span class="column-two">ML
-<!--TODO: replace with button component to display ML  -->
-><br>
-{{event.teamOneML}}
-<br>
-{{event.teamTwoML}}</span>
-<!--TODO: replace with button component to display Spread  -->
-    <span class="column-three">Spread
-        <br>
-        {{event.teamOneSpread}}
-        <br>
-        {{event.teamTwoSpread}}
-    </span>
-    </div></div>
-
-
+<template>
+<div class="card">
+    <slot name="eventtitle"></slot>       
+        <div class="content">
+            
+            <div class="column-one">
+                <br>
+                <slot name="teams"></slot>
+            </div> 
+            <div class="column-two">
+                ML
+                <br>
+                 <slot name="ml"></slot>
+            </div>
+            <div class="column-three">
+                Spread
+                <br>
+              <slot name="spread"></slot>
+            </div> 
+        </div>
+</div> 
 
 </template>
 <style lang="scss" scoped>
 
 .content {
   display: grid;
-  grid-column-gap: 1rem;
-  grid-row-gap: 1rem;
+  grid-column-gap: 1em;
+  grid-row-gap: 3em;
 
 }
+
+.card {
+border: 2px solid #000000;
+border-radius: 4px;
+padding: .5rem;
+ 
+}
+
 
 .column-one {
     grid-column:1;
