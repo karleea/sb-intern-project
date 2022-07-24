@@ -1,8 +1,9 @@
 <script setup>
 import { computed, inject, ref } from 'vue'
+import Button from '@/components/SButton.vue'
+import EventCard from '@/components/SEventCard.vue'
 import Header from '@/components/SHeader.vue'
 import HeaderItem from '@/components/SHeaderItem.vue'
-import EventCard from '@/components/SEventCard.vue'
 import MlbIcon from '@/components/icons/MlbIcon.vue'
 import NbaIcon from '@/components/icons/NbaIcon.vue'
 import NflIcon from '@/components/icons/NflIcon.vue'
@@ -20,12 +21,13 @@ axios
   .then(({ data }) => (allSports.value = data))
 
 axios
+  .get('/bets')
+  .then(({ data }) => (bets.value = data))
+
+axios
   .get('/events')
   .then(({ data }) => (events.value = data))
 
-axios
-  .get('/bets')
-  .then(({ data }) => (bets.value = data))
 axios
   .get('/teams')
   .then(({ data }) => (teams.value = data))
@@ -55,12 +57,22 @@ const eventRows = computed(() => {
       
       return {  
         id: eventId,
-        firstTeam: teamOneInfo.name,
-        secondTeam: teamTwoInfo.name,
-        teamOneSpread,
-        teamTwoSpread,
-        teamOneML,
-        teamTwoML,
+        firstTeam: {
+          name: teamOneInfo.name,
+          id: teamOneInfo.id,
+          spread: { id: teamOneSpreadId, 
+                    value: teamOneSpread },
+          ml: { id: teamOneMLId,
+                value: teamOneML } 
+        },
+        secondTeam: {
+          name: teamTwoInfo.name,
+          id: teamTwoInfo.id,
+          spread: { id: teamTwoSpreadId, 
+                    value: teamTwoSpread },
+          ml: { id: teamTwoMLId,
+                value: teamTwoML } 
+          },
       }
     })
 
@@ -92,6 +104,15 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
 })))
 
 // // Submit button will have: 'eventId', 'betId', 'teamId'
+function sendBet(eventID, teamID, betObj){
+const bet = {
+        betId: betObj.id,
+        eventId: eventID,
+        teamId: teamID };
+
+axios.post('/submit', bet)
+  .then((result) => (console.log(result.data)))
+}
 </script>
 <template>
   <div class="container">
@@ -107,30 +128,56 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
       Sidebar
     </aside>
 
+<!-- TODO: Figure out how to make this less verbose -->
     <main class="content">
       <div v-for="sport in eventRows"
-      :key="sport.initial" class="sportRow">
+      :key="sport.initial" 
+      class="sportRow">
         <h2>{{ sport.name }}</h2>
         <div class="cards">
           <EventCard v-for="event in sport.allEvents"
-          :key="event.id" class="card">
-            <template v-slot:eventtitle>
-                <h3>{{ event.firstTeam }} vs {{ event.secondTeam}}</h3> 
+          :key="event.id" 
+          class="card">
+            <template #eventTitle>
+                <h3>{{ event.firstTeam.name }} vs {{ event.secondTeam.name}}</h3> 
             </template>
-            <template v-slot:teams>
-              {{ event.firstTeam }}
-              <br>
-              {{ event.secondTeam }}
+            <template #teamOneName>
+              {{ event.firstTeam.name }}
             </template>
-            <template v-slot:ml>
-              {{event.teamOneML}}
-              <br>
-              {{event.teamTwoML}}
+            <template #teamOneML>
+              <Button
+                @click="sendBet(event.id, event.firstTeam.id, event.firstTeam.ml)">
+                <template #value>
+                  {{ event.firstTeam.ml.value }}
+                  </template>
+                </Button>
             </template>
-            <template v-slot:spread>
-              {{event.teamOneSpread}}
-              <br>
-              {{event.teamTwoSpread}}
+            <template #teamOneSpread>
+              <Button
+                @click="sendBet(event.id, event.firstTeam.id, event.firstTeam.spread)">
+                <template #value>
+                  {{ event.firstTeam.spread.value }}
+                </template>
+              </Button>
+            </template>
+            <template #teamTwoName>
+              {{ event.secondTeam.name }}
+            </template>
+            <template #teamTwoML>
+              <Button
+                @click="sendBet(event.id, event.secondTeam.id, event.secondTeam.ml)">
+                  <template #value>
+                    {{ event.secondTeam.ml.value }}
+                  </template>
+              </Button>
+            </template>
+            <template #teamTwoSpread>
+              <Button
+                @click="sendBet(event.id, event.secondTeam.id, event.secondTeam.spread)">
+                  <template #value>
+                    {{ event.secondTeam.spread.value }}
+                  </template>  
+              </Button>
             </template>
           </EventCard>
         </div>
@@ -141,6 +188,7 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
 
 
 <style lang="scss" scoped>
+
 .container {
   display: grid;
   grid-template-columns: minmax(25%, 300px) 1fr;
@@ -155,17 +203,20 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
 .content {
   grid-area: 2 / 2 / 3 / 3;
 }
+/* TODO: Troubleshooting the horizontal scroll,
+not sure why the entire page has a huge horizontal scroll with tons of blank space in
+addition to the .cards div */
 
-.sportRow {
-    display: flex;
-    flex-direction: column
- 
-}
 .cards{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-auto-rows: auto;
-    grid-gap: 1rem;}
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  max-width: 30%
+}
+
+  .card {
+    flex: 0 0 auto;
+  }
 
 
 </style>
