@@ -60,19 +60,27 @@ const eventRows = computed(() => {
         firstTeam: {
           name: teamOneInfo.name,
           id: teamOneInfo.id,
-          spread: { id: teamOneSpreadId, 
-                    value: teamOneSpread },
-          ml: { id: teamOneMLId,
-                value: teamOneML } 
+          spread: {
+             id: teamOneSpreadId, 
+             value: teamOneSpread
+             },
+          ml: {
+            id: teamOneMLId,
+            value: teamOneML
+            } 
         },
         secondTeam: {
           name: teamTwoInfo.name,
           id: teamTwoInfo.id,
-          spread: { id: teamTwoSpreadId, 
-                    value: teamTwoSpread },
-          ml: { id: teamTwoMLId,
-                value: teamTwoML } 
-          },
+          spread: {
+            id: teamTwoSpreadId, 
+            value: teamTwoSpread 
+            },
+          ml: { 
+            id: teamTwoMLId,
+            value: teamTwoML
+            } 
+        }
       }
     })
 
@@ -104,16 +112,17 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
 })))
 
 // // Submit button will have: 'eventId', 'betId', 'teamId'
-function sendBet(eventID, teamID, betObj){
-const bet = {
-        betId: betObj.id,
-        eventId: eventID,
-        teamId: teamID };
+const sendBet = (eventID, teamID, betID) => {
+  const bet = {
+          betId: betID,
+          eventId: eventID,
+          teamId: teamID };
 
-axios.post('/submit', bet)
-  .then((result) => (console.log(result.data)))
+  axios.post('/submit', bet)
+    .then((result) => (console.log(result.data)))
 }
 </script>
+
 <template>
   <div class="container">
     <Header>
@@ -130,53 +139,42 @@ axios.post('/submit', bet)
 
 <!-- TODO: Figure out how to make this less verbose -->
     <main class="content">
-      <div v-for="sport in eventRows"
-      :key="sport.initial" 
-      class="sportRow">
-        <h2>{{ sport.name }}</h2>
+      <div
+        v-for="{name, initial, allEvents} in eventRows"
+        :key="{initial}"
+        class="sportRow">
+        <h2 class="sportName">{{ name }}</h2>
         <div class="cards">
-          <EventCard v-for="event in sport.allEvents"
-          :key="event.id" 
+          <EventCard v-for="{id, firstTeam, secondTeam} in allEvents"
+          :key="id" 
           class="card">
             <template #eventTitle>
-                <h3>{{ event.firstTeam.name }} vs {{ event.secondTeam.name}}</h3> 
+                <h3>{{ firstTeam.name }} vs {{ secondTeam.name}}</h3> 
             </template>
             <template #teamOneName>
-              {{ event.firstTeam.name }}
+              {{ firstTeam.name }}
             </template>
             <template #teamOneML>
-              <Button
-                @click="sendBet(event.id, event.firstTeam.id, event.firstTeam.ml)">
-                <template #value>
-                  {{ event.firstTeam.ml.value }}
-                  </template>
-                </Button>
+              <Button @click="sendBet(id, firstTeam.id, firstTeam.ml.id)">
+                  {{ firstTeam.ml.value }}
+              </Button>
             </template>
             <template #teamOneSpread>
-              <Button
-                @click="sendBet(event.id, event.firstTeam.id, event.firstTeam.spread)">
-                <template #value>
-                  {{ event.firstTeam.spread.value }}
-                </template>
+              <Button @click="sendBet(id, firstTeam.id, firstTeam.spread.id)">
+                  {{ firstTeam.spread.value }}
               </Button>
             </template>
             <template #teamTwoName>
-              {{ event.secondTeam.name }}
+              {{ secondTeam.name }}
             </template>
             <template #teamTwoML>
-              <Button
-                @click="sendBet(event.id, event.secondTeam.id, event.secondTeam.ml)">
-                  <template #value>
-                    {{ event.secondTeam.ml.value }}
-                  </template>
+              <Button @click="sendBet(id, secondTeam.id, secondTeam.ml.id)">
+                  {{ secondTeam.ml.value }}
               </Button>
             </template>
             <template #teamTwoSpread>
-              <Button
-                @click="sendBet(event.id, event.secondTeam.id, event.secondTeam.spread)">
-                  <template #value>
-                    {{ event.secondTeam.spread.value }}
-                  </template>  
+              <Button @click="sendBet(id, secondTeam.id, secondTeam.spread.id)">
+                  {{ secondTeam.spread.value }}
               </Button>
             </template>
           </EventCard>
@@ -186,37 +184,38 @@ axios.post('/submit', bet)
   </div>
 </template>
 
-
 <style lang="scss" scoped>
+$bg-dark: #081f36;
+$title-color: #c41f32;
 
 .container {
   display: grid;
   grid-template-columns: minmax(25%, 300px) 1fr;
   grid-template-rows: auto 1fr;
+  overflow-x: hidden;
 }
 .sidebar {
+  background-color: $bg-dark;
   grid-area: 1 / 1 / 3 / 2;
 }
 .header {
   grid-area: 1 / 2 / 2 / 3;
+  background-color: $bg-dark;
 }
 .content {
   grid-area: 2 / 2 / 3 / 3;
 }
-/* TODO: Troubleshooting the horizontal scroll,
-not sure why the entire page has a huge horizontal scroll with tons of blank space in
-addition to the .cards div */
 
+.sportName {
+  color: $title-color;
+}
 .cards{
   display: flex;
-  flex-wrap: nowrap;
   overflow-x: auto;
-  max-width: 30%
+  max-width:30%
 }
-
   .card {
     flex: 0 0 auto;
+    margin: .25rem;
   }
-
-
 </style>
