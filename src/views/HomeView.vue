@@ -185,12 +185,12 @@ const sendBet = (eventID, teamID, betID) => {
 <style lang="scss" scoped>
 .container {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: auto;
+	grid-template-columns: minmax(25%, 300px) 1fr;
+	grid-template-rows: auto 1fr;
 }
 
 .content{
-grid-area: 2 / 2 / 3 / 3;
+	grid-area: 2 / 2 / 3 / 3;
 }
 
 .sidebar {
@@ -206,7 +206,7 @@ grid-area: 2 / 2 / 3 / 3;
 .sport-row {
 	display: flex;
 	flex-direction: column;
-	width: 65em
+	width: 65em;
 }
 
 .sport-name {
