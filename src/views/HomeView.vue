@@ -4,10 +4,15 @@ import Button from '@/components/SButton.vue'
 import EventCard from '@/components/SEventCard.vue'
 import Header from '@/components/SHeader.vue'
 import HeaderItem from '@/components/SHeaderItem.vue'
+import SidebarItem from '@/components/SSidebarItem.vue'
+import HomeIcon from '@/components/icons/HomeIcon.vue'
+import SearchIcon from '@/components/icons/SearchIcon.vue'
+import LoginIcon from '@/components/icons/LoginIcon.vue'
 import MlbIcon from '@/components/icons/MlbIcon.vue'
 import NbaIcon from '@/components/icons/NbaIcon.vue'
 import NflIcon from '@/components/icons/NflIcon.vue'
 import NhlIcon from '@/components/icons/NhlIcon.vue'
+
 
 const axios = inject('axios')
 const allSports = ref([])
@@ -15,6 +20,20 @@ const events = ref([])
 const bets = ref([])
 const teams = ref([])
 const sports = ref([])
+const links = ref([
+  {
+    text: 'home',
+    icon: null
+  },
+  {
+    text: 'search',
+    icon: null
+    },
+    {
+      text: 'login',
+      icon: null
+      }
+])
 
 axios
   .get('/all-sports')
@@ -90,8 +109,8 @@ const eventRows = computed(() => {
   })
 })
 
-const getIcon = sportKey => {
-  switch (sportKey) {
+const getIcon = key => {
+  switch (key) {
     case 'nhl':
       return NhlIcon;
     case 'mlb':
@@ -100,6 +119,12 @@ const getIcon = sportKey => {
       return NflIcon;
     case 'nba':
       return NbaIcon;
+    case 'home':
+      return HomeIcon;
+    case 'search':
+      return SearchIcon;
+    case 'login':
+      return LoginIcon;
   }
 }
 
@@ -109,6 +134,11 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
   icon: getIcon(sport.key)
 })))
 
+const linksWithIcon = computed(() => links.value.map( link => ({
+  text: link.text[0].toUpperCase() + link.text.substring(1),
+  icon: getIcon(link.text)
+}
+) ))
 const sendBet = (eventID, teamID, betID) => {
   const bet = {
     betId: betID,
@@ -128,7 +158,7 @@ axios.post('/submit', bet)
     </Header>
 
     <aside class="sidebar">
-      Sidebar
+        <SidebarItem v-for="link in linksWithIcon" :text="link.text" :icon="link.icon">{{ link }}</SidebarItem>
     </aside>
 
     <main class="content">
