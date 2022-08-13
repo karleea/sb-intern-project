@@ -19,20 +19,43 @@ const props = defineProps({
 
 <template>
   <div class="header-item">
-    <span class="initials"><h1>{{ initials }}</h1></span>
-
-    <component :is="icon" />
+    <a href="/">
+      <h1 class="initials"> {{ initials }}
+        <component class="sport-icon" :is="icon" />
+      </h1>
+    </a>
   </div>
 </template>
 
 <style lang="scss" scoped>
+a:visited {
+  color: #91969e;
+}
+
+a:hover {
+  color: #c41f32;
+}
+
+a:link {
+  text-decoration: none;
+}
+
 .header-item {
   align-items: center;
-  column-gap: 8px;
   display: flex;
-  padding: 12px;
+  padding: 15px;
+  color: #91969e;
 }
+
+.header-item:hover {
+  color: #c41f32;
+}
+
 .initials {
   font-size: 20px;
+}
+
+.sport-icon {
+  margin-left: 5px;
 }
 </style>
