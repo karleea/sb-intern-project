@@ -28,16 +28,18 @@ const props = defineProps({
 </template>
 
 <style lang="scss" scoped>
-a:visited {
-  color: #91969e;
-}
+a {  
+  &:link{
+    text-decoration: none;
+  } 
 
-a:hover {
-  color: #c41f32;
-}
+  &:visited {
+    color: #91969e;
+  }
 
-a:link {
-  text-decoration: none;
+  &:hover {
+    color: #c41f32;
+  }
 }
 
 .header-item {
@@ -48,7 +50,7 @@ a:link {
 }
 
 .header-item:hover {
-  color: #c41f32;
+  color:#c41f32;
 }
 
 .initials {

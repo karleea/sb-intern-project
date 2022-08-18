@@ -21,23 +21,25 @@ const props = defineProps({
   <div class="sidebar-item">
     <a href="/">
       <h1 class="text"> {{ text }}
-       <component class="=link-icon" :is="icon" />
+       <component class="link-icon" :is="icon" />
       </h1> 
     </a>
   </div>
 </template>
 
 <style lang="scss" scoped>
-a:visited {
-  color: #91969e;
-}
+a {
+  &:link {
+    text-decoration: none;
+  }
 
-a:hover {
-  color: #c41f32;
-}
-
-a:link {
-  text-decoration: none;
+  &:visited {
+    color: #91969e;
+    }
+  
+  &:hover {
+    color: #c41f32;
+  }
 }
 
 .sidebar-item {

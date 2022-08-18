@@ -20,20 +20,7 @@ const events = ref([])
 const bets = ref([])
 const teams = ref([])
 const sports = ref([])
-const links = ref([
-  {
-    text: 'home',
-    icon: null
-  },
-  {
-    text: 'search',
-    icon: null
-    },
-    {
-      text: 'login',
-      icon: null
-      }
-])
+const links = ref(['home', 'search', 'login'])
 
 axios
   .get('/all-sports')
@@ -135,8 +122,8 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
 })))
 
 const linksWithIcon = computed(() => links.value.map( link => ({
-  text: link.text[0].toUpperCase() + link.text.substring(1),
-  icon: getIcon(link.text)
+  text: link[0].toUpperCase() + link.substring(1),
+  icon: getIcon(link)
 }
 ) ))
 const sendBet = (eventID, teamID, betID) => {
@@ -154,11 +141,17 @@ axios.post('/submit', bet)
 <template>
   <div class="container">
     <Header>
-      <HeaderItem v-for="sport in sportsWithIcon" :key="sport.key" :initials="sport.initials" :icon="sport.icon" />
+      <HeaderItem v-for="sport in sportsWithIcon"
+      :icon="sport.icon"
+      :initials="sport.initials"
+      :key="sport.key" />
     </Header>
 
     <aside class="sidebar">
-        <SidebarItem v-for="link in linksWithIcon" :text="link.text" :icon="link.icon">{{ link }}</SidebarItem>
+        <SidebarItem v-for="link in linksWithIcon" 
+        :icon="link.icon"
+        :key="link.key"
+        :text="link.text"> {{ link }}</SidebarItem>
     </aside>
 
     <main class="content">
