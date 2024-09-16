@@ -1,12 +1,12 @@
 <script>
 export default {
-  name: 'SHeaderItem'
+  name: 'SSidebarItem'
 }
 </script>
 
 <script setup>
 const props = defineProps({
-  initials: {
+  text: {
     type: String,
     required: true
   },
@@ -18,46 +18,46 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="header-item">
+  <div class="sidebar-item">
     <a href="/">
-      <h1 class="initials"> {{ initials }}
-        <component class="sport-icon" :is="icon" />
-      </h1>
+      <h1 class="text"> {{ text }}
+       <component class="link-icon" :is="icon" />
+      </h1> 
     </a>
   </div>
 </template>
 
 <style lang="scss" scoped>
-a {  
-  &:link{
+a {
+  &:link {
     text-decoration: none;
-  } 
+  }
 
   &:visited {
     color: #91969e;
-  }
-
+    }
+  
   &:hover {
     color: #c41f32;
   }
 }
 
-.header-item {
+.sidebar-item {
   align-items: center;
   display: flex;
-  padding: 15px;
+  padding: 30px;
   color: #91969e;
 }
 
-.header-item:hover {
-  color:#c41f32;
+.sidebar-item:hover {
+  color: #c41f32;
 }
 
-.initials {
-  font-size: 20px;
+.text {
+  font-size: 24x;
 }
 
-.sport-icon {
-  margin-left: 5px;
+.link-icon {
+  margin-left: 15px;
 }
 </style>

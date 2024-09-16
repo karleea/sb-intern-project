@@ -4,10 +4,15 @@ import Button from '@/components/SButton.vue'
 import EventCard from '@/components/SEventCard.vue'
 import Header from '@/components/SHeader.vue'
 import HeaderItem from '@/components/SHeaderItem.vue'
+import SidebarItem from '@/components/SSidebarItem.vue'
+import HomeIcon from '@/components/icons/HomeIcon.vue'
+import SearchIcon from '@/components/icons/SearchIcon.vue'
+import LoginIcon from '@/components/icons/LoginIcon.vue'
 import MlbIcon from '@/components/icons/MlbIcon.vue'
 import NbaIcon from '@/components/icons/NbaIcon.vue'
 import NflIcon from '@/components/icons/NflIcon.vue'
 import NhlIcon from '@/components/icons/NhlIcon.vue'
+
 
 const axios = inject('axios')
 const allSports = ref([])
@@ -15,6 +20,7 @@ const events = ref([])
 const bets = ref([])
 const teams = ref([])
 const sports = ref([])
+const links = ref(['home', 'search', 'login'])
 
 axios
   .get('/all-sports')
@@ -90,8 +96,8 @@ const eventRows = computed(() => {
   })
 })
 
-const getIcon = sportKey => {
-  switch (sportKey) {
+const getIcon = key => {
+  switch (key) {
     case 'nhl':
       return NhlIcon;
     case 'mlb':
@@ -100,6 +106,12 @@ const getIcon = sportKey => {
       return NflIcon;
     case 'nba':
       return NbaIcon;
+    case 'home':
+      return HomeIcon;
+    case 'search':
+      return SearchIcon;
+    case 'login':
+      return LoginIcon;
   }
 }
 
@@ -109,6 +121,11 @@ const sportsWithIcon = computed(() => allSports.value.map(sport => ({
   icon: getIcon(sport.key)
 })))
 
+const linksWithIcon = computed(() => links.value.map( link => ({
+  text: link[0].toUpperCase() + link.substring(1),
+  icon: getIcon(link)
+}
+) ))
 const sendBet = (eventID, teamID, betID) => {
   const bet = {
     betId: betID,
@@ -124,11 +141,17 @@ axios.post('/submit', bet)
 <template>
   <div class="container">
     <Header>
-      <HeaderItem v-for="sport in sportsWithIcon" :key="sport.key" :initials="sport.initials" :icon="sport.icon" />
+      <HeaderItem v-for="sport in sportsWithIcon"
+      :icon="sport.icon"
+      :initials="sport.initials"
+      :key="sport.key" />
     </Header>
 
     <aside class="sidebar">
-      Sidebar
+        <SidebarItem v-for="link in linksWithIcon" 
+        :icon="link.icon"
+        :key="link.key"
+        :text="link.text"> {{ link }}</SidebarItem>
     </aside>
 
     <main class="content">
